@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
 import junit.framework.JUnit4TestAdapter;
 
 public class HeapFileReadTest extends SimpleDbTestBase {
@@ -51,9 +52,10 @@ public class HeapFileReadTest extends SimpleDbTestBase {
      * Unit test for HeapFile.getTupleDesc()
      */
     @Test
-    public void getTupleDesc() throws Exception {    	
-        assertEquals(td, hf.getTupleDesc());        
+    public void getTupleDesc() throws Exception {
+        assertEquals(td, hf.getTupleDesc());
     }
+
     /**
      * Unit test for HeapFile.numPages()
      */
@@ -77,7 +79,7 @@ public class HeapFileReadTest extends SimpleDbTestBase {
         assertTrue(page.isSlotUsed(1));
         assertFalse(page.isSlotUsed(20));
     }
-    
+
     // some code goes here
     // some code goes here
     @Test
