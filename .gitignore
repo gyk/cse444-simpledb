@@ -1,0 +1,13 @@
+bin/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Database logs
+log
+
+# Database files
+*.txt
+*.dat
