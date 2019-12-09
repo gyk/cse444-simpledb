@@ -23,7 +23,7 @@ public interface DbIterator extends Serializable {
     /**
      * Returns true if the iterator has more tuples.
      *
-     * @return true f the iterator has more tuples.
+     * @return true if the iterator has more tuples.
      * @throws IllegalStateException If the iterator has not been opened
      */
     public boolean hasNext() throws DbException, TransactionAbortedException;

@@ -96,7 +96,7 @@ public class Predicate implements Serializable {
 
     /**
      * Returns something useful, like "f = field_id op = op_string operand =
-     * operand_string
+     * operand_string"
      */
     public String toString() {
         // some code goes here

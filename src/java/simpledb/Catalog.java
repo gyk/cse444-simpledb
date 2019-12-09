@@ -30,7 +30,7 @@ public class Catalog {
      * Add a new table to the catalog.
      * This table's contents are stored in the specified DbFile.
      *
-     * @param file      the contents of the table to add;  file.getId() is the identfier of this file/tupledesc param
+     * @param file      the contents of the table to add;  file.getId() is the identifier of this file/tupledesc param
      *                  for the calls getTupleDesc and getFile
      * @param name      the name of the table -- may be an empty string.  May not be null.  If a name conflict exists,
      *                  use the last table to be added as the table for a given name.

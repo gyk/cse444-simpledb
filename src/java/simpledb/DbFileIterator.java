@@ -3,7 +3,7 @@ package simpledb;
 import java.util.*;
 
 /**
- * DbFileIterator is the iterator interface that all SimpleDB Dbfile should
+ * DbFileIterator is the iterator interface that all SimpleDB DbFile should
  * implement.
  */
 public interface DbFileIterator {

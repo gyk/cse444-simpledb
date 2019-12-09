@@ -199,7 +199,7 @@ public class LogFile {
             throws IOException {
         Debug.log("WRITE, offset = " + raf.getFilePointer());
         preAppend();
-        /* update record conists of
+        /* update record consists of
 
            record type
            transaction id
@@ -498,7 +498,7 @@ public class LogFile {
         }
     }
 
-    /** Print out a human readable represenation of the log */
+    /** Print out a human readable representation of the log */
     public void print() throws IOException {
         // some code goes here
     }

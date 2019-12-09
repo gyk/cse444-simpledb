@@ -149,7 +149,7 @@ public class TupleDesc implements Serializable {
 
     public int hashCode() {
         // If you want to use TupleDesc as keys for HashMap, implement this so
-        // that equal objects have equals hashCode() results
+        // that equal objects have equal hashCode() results
         throw new UnsupportedOperationException("unimplemented");
     }
 
