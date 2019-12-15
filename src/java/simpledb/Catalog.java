@@ -17,6 +17,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Threadsafe
  */
 public class Catalog {
+    private class DbTable {
+        final String name;
+        final String primaryKey;
+        final DbFile dbFile;
+
+        public DbTable(String name, String primaryKey, DbFile dbFile) {
+            this.name = name;
+            this.primaryKey = primaryKey;
+            this.dbFile = dbFile;
+        }
+    }
+
+    private ConcurrentHashMap<Integer, DbTable> tables;
+    private ConcurrentHashMap<String, Integer> nameToIdMap;
 
     /**
      * Constructor.
@@ -24,6 +38,8 @@ public class Catalog {
      */
     public Catalog() {
         // some code goes here
+        this.tables = new ConcurrentHashMap<>();
+        this.nameToIdMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -38,6 +54,12 @@ public class Catalog {
      */
     public void addTable(DbFile file, String name, String pkeyField) {
         // some code goes here
+        Integer id = file.getId();
+        DbTable table = new DbTable(name, pkeyField, file);
+        this.tables.put(id, table);
+        if (!name.isEmpty()) {
+            this.nameToIdMap.put(name, id);
+        }
     }
 
     public void addTable(DbFile file, String name) {
@@ -63,7 +85,13 @@ public class Catalog {
      */
     public int getTableId(String name) throws NoSuchElementException {
         // some code goes here
-        return 0;
+        if (name != null) {
+            Integer id = this.nameToIdMap.get(name);
+            if (id != null) {
+                return id;
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     /**
@@ -74,7 +102,7 @@ public class Catalog {
      */
     public TupleDesc getTupleDesc(int tableid) throws NoSuchElementException {
         // some code goes here
-        return null;
+        return this.tables.get(tableid).dbFile.getTupleDesc();
     }
 
     /**
@@ -85,22 +113,22 @@ public class Catalog {
      */
     public DbFile getDatabaseFile(int tableid) throws NoSuchElementException {
         // some code goes here
-        return null;
+        return this.tables.get(tableid).dbFile;
     }
 
     public String getPrimaryKey(int tableid) {
         // some code goes here
-        return null;
+        return this.tables.get(tableid).primaryKey;
     }
 
     public Iterator<Integer> tableIdIterator() {
         // some code goes here
-        return null;
+        return this.tables.keySet().iterator();
     }
 
     public String getTableName(int id) {
         // some code goes here
-        return null;
+        return this.tables.get(id).name;
     }
 
     /**
@@ -108,6 +136,8 @@ public class Catalog {
      */
     public void clear() {
         // some code goes here
+        this.tables.clear();
+        this.nameToIdMap.clear();
     }
 
     /**
