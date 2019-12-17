@@ -10,18 +10,13 @@ public class Insert extends Operator {
 
     /**
      * Constructor.
-     * 
-     * @param t
-     *            The transaction running the insert.
-     * @param child
-     *            The child operator from which to read tuples to be inserted.
-     * @param tableid
-     *            The table in which to insert tuples.
-     * @throws DbException
-     *             if TupleDesc of child differs from table into which we are to
-     *             insert.
+     *
+     * @param t       The transaction running the insert.
+     * @param child   The child operator from which to read tuples to be inserted.
+     * @param tableid The table in which to insert tuples.
+     * @throws DbException if TupleDesc of child differs from table into which we are to insert.
      */
-    public Insert(TransactionId t,DbIterator child, int tableid)
+    public Insert(TransactionId t, DbIterator child, int tableid)
             throws DbException {
         // some code goes here
     }
@@ -50,9 +45,8 @@ public class Insert extends Operator {
      * instances of BufferPool is available via Database.getBufferPool(). Note
      * that insert DOES NOT need check to see if a particular tuple is a
      * duplicate before inserting it.
-     * 
-     * @return A 1-field tuple containing the number of inserted records, or
-     *         null if called more than once.
+     *
+     * @return A 1-field tuple containing the number of inserted records, or null if called more than once.
      * @see Database#getBufferPool
      * @see BufferPool#insertTuple
      */

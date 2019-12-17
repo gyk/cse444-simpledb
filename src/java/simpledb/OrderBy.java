@@ -18,13 +18,10 @@ public class OrderBy extends Operator {
 
     /**
      * Creates a new OrderBy node over the tuples from the iterator.
-     * 
-     * @param orderbyField
-     *            the field to which the sort is applied.
-     * @param asc
-     *            true if the sort order is ascending.
-     * @param child
-     *            the tuples to sort.
+     *
+     * @param orderbyField the field to which the sort is applied.
+     * @param asc          true if the sort order is ascending.
+     * @param child        the tuples to sort.
      */
     public OrderBy(int orderbyField, boolean asc, DbIterator child) {
         this.child = child;
@@ -33,22 +30,19 @@ public class OrderBy extends Operator {
         this.orderByFieldName = td.getFieldName(orderbyField);
         this.asc = asc;
     }
-    
-    public boolean isASC()
-    {
-	return this.asc;
+
+    public boolean isASC() {
+        return this.asc;
     }
-    
-    public int getOrderByField()
-    {
+
+    public int getOrderByField() {
         return this.orderByField;
     }
-    
-    public String getOrderFieldName()
-    {
-	return this.orderByFieldName;
+
+    public String getOrderFieldName() {
+        return this.orderByFieldName;
     }
-    
+
     public TupleDesc getTupleDesc() {
         return td;
     }
@@ -76,9 +70,8 @@ public class OrderBy extends Operator {
     /**
      * Operator.fetchNext implementation. Returns tuples from the child operator
      * in order
-     * 
-     * @return The next tuple in the ordering, or null if there are no more
-     *         tuples
+     *
+     * @return The next tuple in the ordering, or null if there are no more tuples
      */
     protected Tuple fetchNext() throws NoSuchElementException,
             TransactionAbortedException, DbException {
@@ -90,7 +83,7 @@ public class OrderBy extends Operator {
 
     @Override
     public DbIterator[] getChildren() {
-        return new DbIterator[] { this.child };
+        return new DbIterator[]{this.child};
     }
 
     @Override
@@ -119,5 +112,5 @@ class TupleComparator implements Comparator<Tuple> {
         else
             return asc ? -1 : 1;
     }
-    
+
 }
