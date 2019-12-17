@@ -57,7 +57,7 @@ public class RecordId implements Serializable {
         if (!(o instanceof RecordId)) {
             return false;
         }
-        RecordId that = (RecordId)o;
+        RecordId that = (RecordId) o;
         return this.pageId.equals(that.pageId) && this.tupleno == that.tupleno;
     }
 

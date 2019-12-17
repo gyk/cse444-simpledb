@@ -70,9 +70,7 @@ public class SeqScan implements DbIterator {
         origTd.iterator().forEachRemaining(tdItem -> {
             tdList.add(new TupleDesc.TDItem(tdItem.fieldType, tableAlias + tdItem.fieldName));
         });
-        TupleDesc.TDItem[] tdItems = new TupleDesc.TDItem[tdList.size()];
-        tdList.toArray(tdItems);
-        this.tupleDesc = new TupleDesc(tdItems);
+        this.tupleDesc = new TupleDesc(tdList.toArray(new TupleDesc.TDItem[]{}));
     }
 
     public SeqScan(TransactionId tid, int tableid) {

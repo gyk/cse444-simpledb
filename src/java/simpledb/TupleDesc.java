@@ -160,9 +160,7 @@ public class TupleDesc implements Serializable {
         ArrayList<TDItem> tdList = new ArrayList<>(td1.numFields() + td2.numFields());
         td1.iterator().forEachRemaining(tdList::add);
         td2.iterator().forEachRemaining(tdList::add);
-        TDItem[] tdItems = new TDItem[tdList.size()];
-        tdList.toArray(tdItems);
-        return new TupleDesc(tdItems);
+        return new TupleDesc(tdList.toArray(new TDItem[]{}));
     }
 
     /**

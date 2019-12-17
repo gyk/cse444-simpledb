@@ -35,40 +35,30 @@ import java.lang.reflect.*;
  */
 
 /**
- <p> The format of the log file is as follows:
-
- <ul>
-
- <li> The first long integer of the file represents the offset of the
- last written checkpoint, or -1 if there are no checkpoints
-
- <li> All additional data in the log consists of log records.  Log
- records are variable length.
-
- <li> Each log record begins with an integer type and a long integer
- transaction id.
-
- <li> Each log record ends with a long integer file offset representing
- the position in the log file where the record began.
-
- <li> There are five record types: ABORT, COMMIT, UPDATE, BEGIN, and
- CHECKPOINT
-
- <li> ABORT, COMMIT, and BEGIN records contain no additional data
-
- <li>UPDATE RECORDS consist of two entries, a before image and an
- after image.  These images are serialized Page objects, and can be
- accessed with the LogFile.readPageData() and LogFile.writePageData()
- methods.  See LogFile.print() for an example.
-
- <li> CHECKPOINT records consist of active transactions at the time
- the checkpoint was taken and their first log record on disk.  The format
- of the record is an integer count of the number of transactions, as well
- as a long integer transaction id and a long integer first record offset
- for each active transaction.
-
- </ul>
-
+ * <p> The format of the log file is as follows:
+ * <p>
+ * <ul>
+ * <li> The first long integer of the file represents the offset of the
+ * last written checkpoint, or -1 if there are no checkpoints
+ * <li> All additional data in the log consists of log records.  Log
+ * records are variable length.
+ * <li> Each log record begins with an integer type and a long integer
+ * transaction id.
+ * <li> Each log record ends with a long integer file offset representing
+ * the position in the log file where the record began.
+ * <li> There are five record types: ABORT, COMMIT, UPDATE, BEGIN, and
+ * CHECKPOINT
+ * <li> ABORT, COMMIT, and BEGIN records contain no additional data
+ * <li>UPDATE RECORDS consist of two entries, a before image and an
+ * after image.  These images are serialized Page objects, and can be
+ * accessed with the LogFile.readPageData() and LogFile.writePageData()
+ * methods.  See LogFile.print() for an example.
+ * <li> CHECKPOINT records consist of active transactions at the time
+ * the checkpoint was taken and their first log record on disk.  The format
+ * of the record is an integer count of the number of transactions, as well
+ * as a long integer transaction id and a long integer first record offset
+ * for each active transaction.
+ * </ul>
  */
 
 public class LogFile {
@@ -93,16 +83,17 @@ public class LogFile {
 
     HashMap<Long, Long> tidToFirstLogRecord = new HashMap<Long, Long>();
 
-    /** Constructor.
-     Initialize and back the log file with the specified file.
-     We're not sure yet whether the caller is creating a brand new DB,
-     in which case we should ignore the log file, or whether the caller
-     will eventually want to recover (after populating the Catalog).
-     So we make this decision lazily: if someone calls recover(), then
-     do it, while if someone starts adding log file entries, then first
-     throw out the initial log file contents.
-
-     @param f The log file's name
+    /**
+     * Constructor.
+     * Initialize and back the log file with the specified file.
+     * We're not sure yet whether the caller is creating a brand new DB,
+     * in which case we should ignore the log file, or whether the caller
+     * will eventually want to recover (after populating the Catalog).
+     * So we make this decision lazily: if someone calls recover(), then
+     * do it, while if someone starts adding log file entries, then first
+     * throw out the initial log file contents.
+     *
+     * @param f The log file's name
      */
     public LogFile(File f) throws IOException {
         this.logFile = f;
@@ -139,9 +130,11 @@ public class LogFile {
         return totalRecords;
     }
 
-    /** Write an abort record to the log for the specified tid, force
-     the log to disk, and perform a rollback
-     @param tid The aborting transaction.
+    /**
+     * Write an abort record to the log for the specified tid, force
+     * the log to disk, and perform a rollback
+     *
+     * @param tid The aborting transaction.
      */
     public void logAbort(TransactionId tid) throws IOException {
         // must have buffer pool lock before proceeding, since this
@@ -168,10 +161,11 @@ public class LogFile {
         }
     }
 
-    /** Write a commit record to disk for the specified tid,
-     and force the log to disk.
-
-     @param tid The committing transaction.
+    /**
+     * Write a commit record to disk for the specified tid,
+     * and force the log to disk.
+     *
+     * @param tid The committing transaction.
      */
     public synchronized void logCommit(TransactionId tid) throws IOException {
         preAppend();
@@ -186,13 +180,14 @@ public class LogFile {
         tidToFirstLogRecord.remove(tid.getId());
     }
 
-    /** Write an UPDATE record to disk for the specified tid and page
-     (with provided         before and after images.)
-     @param tid The transaction performing the write
-     @param before The before image of the page
-     @param after The after image of the page
-
-     @see simpledb.Page#getBeforeImage
+    /**
+     * Write an UPDATE record to disk for the specified tid and page
+     * (with provided         before and after images.)
+     *
+     * @param tid    The transaction performing the write
+     * @param before The before image of the page
+     * @param after  The after image of the page
+     * @see simpledb.Page#getBeforeImage
      */
     public synchronized void logWrite(TransactionId tid, Page before,
                                       Page after)
@@ -295,9 +290,10 @@ public class LogFile {
 
     }
 
-    /** Write a BEGIN record for the specified transaction
-     @param tid The transaction that is beginning
-
+    /**
+     * Write a BEGIN record for the specified transaction
+     *
+     * @param tid The transaction that is beginning
      */
     public synchronized void logXactionBegin(TransactionId tid)
             throws IOException {
@@ -316,7 +312,9 @@ public class LogFile {
         Debug.log("BEGIN OFFSET = " + currentOffset);
     }
 
-    /** Checkpoint the log and write a checkpoint record. */
+    /**
+     * Checkpoint the log and write a checkpoint record.
+     */
     public void logCheckpoint() throws IOException {
         //make sure we have buffer pool lock before proceeding
         synchronized (Database.getBufferPool()) {
@@ -357,8 +355,10 @@ public class LogFile {
         logTruncate();
     }
 
-    /** Truncate any unneeded portion of the log to reduce its space
-     consumption */
+    /**
+     * Truncate any unneeded portion of the log to reduce its space
+     * consumption
+     */
     public synchronized void logTruncate() throws IOException {
         preAppend();
         raf.seek(0);
@@ -453,13 +453,14 @@ public class LogFile {
         //print();
     }
 
-    /** Rollback the specified transaction, setting the state of any
-     of pages it updated to their pre-updated state.  To preserve
-     transaction semantics, this should not be called on
-     transactions that have already committed (though this may not
-     be enforced by this method.)
-
-     @param tid The transaction to rollback
+    /**
+     * Rollback the specified transaction, setting the state of any
+     * of pages it updated to their pre-updated state.  To preserve
+     * transaction semantics, this should not be called on
+     * transactions that have already committed (though this may not
+     * be enforced by this method.)
+     *
+     * @param tid The transaction to rollback
      */
     public void rollback(TransactionId tid)
             throws NoSuchElementException, IOException {
@@ -471,9 +472,10 @@ public class LogFile {
         }
     }
 
-    /** Shutdown the logging system, writing out whatever state
-     is necessary so that start up can happen quickly (without
-     extensive recovery.)
+    /**
+     * Shutdown the logging system, writing out whatever state
+     * is necessary so that start up can happen quickly (without
+     * extensive recovery.)
      */
     public synchronized void shutdown() {
         try {
@@ -485,9 +487,10 @@ public class LogFile {
         }
     }
 
-    /** Recover the database system by ensuring that the updates of
-     committed transactions are installed and that the
-     updates of uncommitted transactions are not installed.
+    /**
+     * Recover the database system by ensuring that the updates of
+     * committed transactions are installed and that the
+     * updates of uncommitted transactions are not installed.
      */
     public void recover() throws IOException {
         synchronized (Database.getBufferPool()) {
@@ -498,7 +501,9 @@ public class LogFile {
         }
     }
 
-    /** Print out a human readable representation of the log */
+    /**
+     * Print out a human readable representation of the log
+     */
     public void print() throws IOException {
         // some code goes here
     }

@@ -61,7 +61,7 @@ public class BufferPool {
      * The retrieved page should be looked up in the buffer pool.  If it
      * is present, it should be returned.  If it is not present, it should
      * be added to the buffer pool and returned.  If there is insufficient
-     * space in the buffer pool, an page should be evicted and the new page
+     * space in the buffer pool, a page should be evicted and the new page
      * should be added in its place.
      *
      * @param tid  the ID of the transaction requesting the page
