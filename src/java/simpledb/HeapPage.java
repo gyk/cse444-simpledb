@@ -2,6 +2,7 @@ package simpledb;
 
 import java.util.*;
 import java.io.*;
+import java.util.stream.Stream;
 
 /**
  * Each instance of HeapPage stores data for one page of HeapFiles and
@@ -69,8 +70,8 @@ public class HeapPage implements Page {
      */
     private int getNumTuples() {
         // some code goes here
-        return 0;
-
+        int tupleSize = this.td.getSize();
+        return (BufferPool.getPageSize() * 8) / (tupleSize * 8 + 1);
     }
 
     /**
@@ -79,10 +80,8 @@ public class HeapPage implements Page {
      * @return the number of bytes in the header of a page in a HeapFile with each tuple occupying tupleSize bytes
      */
     private int getHeaderSize() {
-
         // some code goes here
-        return 0;
-
+        return (getNumTuples() + 7) / 8;
     }
 
     /**
@@ -115,7 +114,7 @@ public class HeapPage implements Page {
      */
     public HeapPageId getId() {
         // some code goes here
-        throw new UnsupportedOperationException("implement this");
+        return this.pid;
     }
 
     /**
@@ -285,7 +284,12 @@ public class HeapPage implements Page {
      */
     public int getNumEmptySlots() {
         // some code goes here
-        return 0;
+        int cnt = 0;
+        for (byte b : this.header) {
+            // Do not write `b ^ 0xFF` -- `b` is converted to signed integer first.
+            cnt += 8 - Integer.bitCount(b & 0xFF);
+        }
+        return cnt;
     }
 
     /**
@@ -293,7 +297,9 @@ public class HeapPage implements Page {
      */
     public boolean isSlotUsed(int i) {
         // some code goes here
-        return false;
+        int iByte = i / 8;
+        int iBit = i & (8 - 1);
+        return (this.header[iByte] & (1 << iBit)) != 0;
     }
 
     /**
@@ -310,7 +316,11 @@ public class HeapPage implements Page {
      */
     public Iterator<Tuple> iterator() {
         // some code goes here
-        return null;
+        return Stream.iterate(0, n -> n + 1)
+                .limit(getNumTuples())
+                .filter(this::isSlotUsed)
+                .map(i -> this.tuples[i])
+                .iterator();
     }
 
 }

@@ -10,7 +10,7 @@ Progress (following the recommended order of implementation):
     - [X] `Tuple` & `TupleDesc`
     - [X] `Catalog`
     - [X] `BufferPool`
-    - [ ] `HeapPage` & `HeapFile`
+    - [X] `HeapPage` & `HeapFile`
     - [ ] `SeqScan`
 - [ ] Lab2
 - [ ] Lab3
