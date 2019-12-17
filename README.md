@@ -12,7 +12,12 @@ Progress (following the recommended order of implementation):
     - [X] `BufferPool`
     - [X] `HeapPage` & `HeapFile`
     - [X] `SeqScan`
-- [ ] Lab2
+- [ ] [Lab2](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab2/lab2.html)
+    - [ ] `Filter` & `Join`
+    - [ ] `IntegerAggregator` & `StringAggregator`
+    - [ ] `Aggregate`
+    - [ ] Insertion, deletion, and page eviction in `BufferPool`
+    - [ ] `Insert` & `Delete`
 - [ ] Lab3
 - [ ] Lab4
 - [ ] Lab5
