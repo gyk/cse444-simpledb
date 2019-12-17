@@ -126,8 +126,10 @@ public class HeapFile implements DbFile {
             int nPages;
             Iterator<Tuple> tupleIter;
 
-            private void loadTupleIterator() {
-                this.tupleIter = ((HeapPage) readPage(new HeapPageId(getId(), this.iPage))).iterator();
+            private void loadTupleIterator() throws DbException, TransactionAbortedException {
+                PageId pid = new HeapPageId(getId(), this.iPage);
+                Page page = Database.getBufferPool().getPage(tid, pid, Permissions.READ_ONLY);
+                this.tupleIter = ((HeapPage) page).iterator();
             }
 
             @Override

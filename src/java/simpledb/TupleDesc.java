@@ -85,7 +85,7 @@ public class TupleDesc implements Serializable {
         }
     }
 
-    private TupleDesc(TDItem[] tdItems) {
+    public TupleDesc(TDItem[] tdItems) {
         this.tdItems = tdItems;
     }
 

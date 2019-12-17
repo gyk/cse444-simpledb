@@ -6,12 +6,12 @@ https://courses.cs.washington.edu/courses/cse444/15sp/).
 
 Progress (following the recommended order of implementation):
 
-- [ ] [Lab1](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab1/lab1.html)
+- [X] [Lab1](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab1/lab1.html)
     - [X] `Tuple` & `TupleDesc`
     - [X] `Catalog`
     - [X] `BufferPool`
     - [X] `HeapPage` & `HeapFile`
-    - [ ] `SeqScan`
+    - [X] `SeqScan`
 - [ ] Lab2
 - [ ] Lab3
 - [ ] Lab4
