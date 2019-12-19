@@ -186,13 +186,13 @@ public class JoinOptimizer {
             HashMap<String, TableStats> stats,
             HashMap<String, Double> filterSelectivities, boolean explain)
             throws ParsingException {
-        //Not necessary for labs 1--3
+        // not necessary for labs 1--3
 
         // See the Lab 4 writeup for some hints as to how this function
         // should work.
 
         // some code goes here
-        //Replace the following
+        // Replace the following
         return joins;
     }
 
@@ -206,7 +206,7 @@ public class JoinOptimizer {
      *
      * @param stats               table stats for all of the tables, referenced by table names rather than alias (see
      *                            {@link #orderJoins})
-     * @param filterSelectivities the selectivities of the filters over each of the tables (where tables are indentified
+     * @param filterSelectivities the selectivities of the filters over each of the tables (where tables are identified
      *                            by their alias or name if no alias is given)
      * @param joinToRemove        the join to remove from joinSet
      * @param joinSet             the set of joins being considered
@@ -214,7 +214,7 @@ public class JoinOptimizer {
      *                            computeCostAndCardOfSubplan for this joinSet, from returned CostCard)
      * @param pc                  the PlanCache for this join; should have subplans for all plans of size
      *                            joinSet.size()-1
-     * @return A {@link CostCard} objects desribing the cost, cardinality, optimal subplan
+     * @return A {@link CostCard} objects describing the cost, cardinality, optimal subplan
      * @throws ParsingException when stats, filterSelectivities, or pc object is missing tables involved in join
      */
     @SuppressWarnings("unchecked")
@@ -290,7 +290,7 @@ public class JoinOptimizer {
                                 filterSelectivities.get(j.t2Alias));
                 rightPkey = j.t2Alias == null ? false : isPkey(j.t2Alias,
                         j.f2PureName);
-            } else if (doesJoin(prevBest, j.t2Alias)) { // j.t2 is in prevbest
+            } else if (doesJoin(prevBest, j.t2Alias)) { // j.t2 is in prevBest
                 // (both
                 // shouldn't be)
                 t2cost = prevBestCost; // left side just has cost of whatever
@@ -311,7 +311,7 @@ public class JoinOptimizer {
             }
         }
 
-        // case where prevbest is left
+        // case where prevBest is left
         double cost1 = estimateJoinCost(j, t1card, t2card, t1cost, t2cost);
 
         LogicalJoinNode j2 = j.swapInnerOuter();
@@ -333,7 +333,7 @@ public class JoinOptimizer {
                 rightPkey, stats);
         cc.cost = cost1;
         cc.plan = (Vector<LogicalJoinNode>) prevBest.clone();
-        cc.plan.addElement(j); // prevbest is left -- add new join to end
+        cc.plan.addElement(j); // prevBest is left -- add new join to end
         return cc;
     }
 
@@ -384,9 +384,9 @@ public class JoinOptimizer {
      * call this when the analyze flag is true.
      *
      * @param js            the join plan to visualize
-     * @param pc            the PlanCache accumulated whild building the optimal plan
+     * @param pc            the PlanCache accumulated while building the optimal plan
      * @param stats         table statistics for base tables
-     * @param selectivities the selectivities of the filters over each of the tables (where tables are indentified by
+     * @param selectivities the selectivities of the filters over each of the tables (where tables are identified by
      *                      their alias or name if no alias is given)
      */
     private void printJoins(Vector<LogicalJoinNode> js, PlanCache pc,

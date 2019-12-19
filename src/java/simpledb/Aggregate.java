@@ -15,8 +15,8 @@ public class Aggregate extends Operator {
      * Constructor.
      * <p>
      * Implementation hint: depending on the type of afield, you will want to
-     * construct an {@link IntAggregator} or {@link StringAggregator} to help
-     * you with your implementation of readNext().
+     * construct an {@link IntegerAggregator} or {@link StringAggregator} to help
+     * you with your implementation of fetchNext().
      *
      * @param child  The DbIterator that is feeding us tuples.
      * @param afield The column over which we are computing an aggregate.
@@ -38,7 +38,7 @@ public class Aggregate extends Operator {
 
     /**
      * @return If this aggregate is accompanied by a group by, return the name of the groupby field in the <b>OUTPUT</b>
-     * tuples If not, return null;
+     * tuples. If not, return null;
      */
     public String groupFieldName() {
         // some code goes here

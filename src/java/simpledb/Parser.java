@@ -144,7 +144,8 @@ public class Parser {
             ZFromItem fromIt = from.elementAt(i);
             try {
 
-                int id = Database.getCatalog().getTableId(fromIt.getTable()); // will
+                int id = Database.getCatalog().getTableId(fromIt.getTable());
+                // will
                 // fall
                 // through
                 // if
