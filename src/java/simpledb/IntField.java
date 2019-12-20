@@ -84,4 +84,14 @@ public class IntField implements Field {
     public Type getType() {
         return Type.INT_TYPE;
     }
+
+    @Override
+    public int compareTo(Field o) {
+        int cmpType = this.getType().compareTo(o.getType());
+        if (cmpType != 0) {
+            return cmpType;
+        }
+        IntField that = (IntField) o;
+        return Integer.compare(this.getValue(), that.getValue());
+    }
 }

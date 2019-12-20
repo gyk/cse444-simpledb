@@ -1,11 +1,20 @@
 package simpledb;
 
+import java.util.*;
+
 /**
  * Knows how to compute some aggregate over a set of StringFields.
  */
 public class StringAggregator implements Aggregator {
 
     private static final long serialVersionUID = 1L;
+
+    private final int gbfield;
+    private final Type gbfieldtype;
+    private final int afield; // unused
+    private final Op what; // unused
+
+    private TreeMap<Field, Integer> countMap;
 
     /**
      * Aggregate constructor
@@ -19,6 +28,19 @@ public class StringAggregator implements Aggregator {
 
     public StringAggregator(int gbfield, Type gbfieldtype, int afield, Op what) {
         // some code goes here
+        if (what != Op.COUNT) {
+            throw new IllegalArgumentException();
+        }
+        this.gbfield = gbfield;
+        this.gbfieldtype = gbfieldtype;
+        this.afield = afield;
+        this.what = what;
+
+        this.countMap = new TreeMap<>(Comparator.nullsFirst(Comparator.naturalOrder()));
+    }
+
+    public boolean hasGrouping() {
+        return this.gbfield != Aggregator.NO_GROUPING;
     }
 
     /**
@@ -28,6 +50,14 @@ public class StringAggregator implements Aggregator {
      */
     public void mergeTupleIntoGroup(Tuple tup) {
         // some code goes here
+        Field groupVal;
+        if (hasGrouping()) {
+            groupVal = tup.getField(this.gbfield);
+        } else {
+            groupVal = null;
+        }
+        int count = this.countMap.getOrDefault(groupVal, 0);
+        this.countMap.put(groupVal, count + 1);
     }
 
     /**
@@ -39,7 +69,60 @@ public class StringAggregator implements Aggregator {
      */
     public DbIterator iterator() {
         // some code goes here
-        throw new UnsupportedOperationException("please implement me for lab2");
+        return new DbIterator() {
+            TupleDesc tupleDesc;
+            Iterator<Map.Entry<Field, Integer>> iter;
+
+            @Override
+            public void open() throws DbException, TransactionAbortedException {
+                StringAggregator parent = StringAggregator.this;
+                if (!parent.hasGrouping()) {
+                    this.tupleDesc = new TupleDesc(new Type[]{Type.INT_TYPE});
+                } else {
+                    this.tupleDesc = new TupleDesc(
+                            new Type[]{parent.gbfieldtype, Type.INT_TYPE});
+                }
+
+                this.iter = parent.countMap.entrySet().iterator();
+            }
+
+            @Override
+            public boolean hasNext() throws DbException, TransactionAbortedException {
+                return this.iter.hasNext();
+            }
+
+            @Override
+            public Tuple next() throws DbException, TransactionAbortedException, NoSuchElementException {
+                Map.Entry<Field, Integer> entry = this.iter.next();
+                Field groupVal = entry.getKey();
+                int aggregateVal = entry.getValue();
+
+                StringAggregator parent = StringAggregator.this;
+                Tuple res = new Tuple(this.tupleDesc);
+                if (parent.hasGrouping()) {
+                    res.setField(0, groupVal);
+                    res.setField(1, new IntField(aggregateVal));
+                } else {
+                    res.setField(0, new IntField(aggregateVal));
+                }
+
+                return res;
+            }
+
+            @Override
+            public void rewind() throws DbException, TransactionAbortedException {
+                open();
+            }
+
+            @Override
+            public TupleDesc getTupleDesc() {
+                return this.tupleDesc;
+            }
+
+            @Override
+            public void close() {
+            }
+        };
     }
 
 }

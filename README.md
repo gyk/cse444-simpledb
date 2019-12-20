@@ -14,8 +14,8 @@ Progress (following the recommended order of implementation):
     - [X] `SeqScan`
 - [ ] [Lab2](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab2/lab2.html)
     - [X] `Filter` & `Join`
-    - [ ] `IntegerAggregator` & `StringAggregator`
-    - [ ] `Aggregate`
+    - [X] `IntegerAggregator` & `StringAggregator`
+    - [X] `Aggregate`
     - [ ] Insertion, deletion, and page eviction in `BufferPool`
     - [ ] `Insert` & `Delete`
 - [ ] Lab3

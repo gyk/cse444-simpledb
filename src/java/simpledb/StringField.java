@@ -108,4 +108,14 @@ public class StringField implements Field {
 
         return Type.STRING_TYPE;
     }
+
+    @Override
+    public int compareTo(Field o) {
+        int cmpType = this.getType().compareTo(o.getType());
+        if (cmpType != 0) {
+            return cmpType;
+        }
+        StringField that = (StringField) o;
+        return this.getValue().compareTo(that.getValue());
+    }
 }

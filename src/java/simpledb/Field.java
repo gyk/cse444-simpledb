@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * Interface for values of fields in tuples in SimpleDB.
  */
-public interface Field extends Serializable {
+public interface Field extends Serializable, Comparable<Field> {
     /**
      * Write the bytes representing this field to the specified
      * DataOutputStream.
