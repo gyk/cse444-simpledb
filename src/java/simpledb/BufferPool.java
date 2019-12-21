@@ -2,6 +2,8 @@ package simpledb;
 
 import java.io.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -146,6 +148,10 @@ public class BufferPool {
             throws DbException, IOException, TransactionAbortedException {
         // some code goes here
         // not necessary for lab1
+        List<Page> pages = Database.getCatalog().getDatabaseFile(tableId).insertTuple(tid, t);
+        for (Page p : pages) {
+            p.markDirty(true, tid);
+        }
     }
 
     /**
@@ -164,6 +170,11 @@ public class BufferPool {
             throws DbException, IOException, TransactionAbortedException {
         // some code goes here
         // not necessary for lab1
+        int tableId = t.getRecordId().getPageId().getTableId();
+        List<Page> pages = Database.getCatalog().getDatabaseFile(tableId).deleteTuple(tid, t);
+        for (Page p : pages) {
+            p.markDirty(true, tid);
+        }
     }
 
     /**
@@ -213,7 +224,21 @@ public class BufferPool {
     private synchronized void evictPage() throws DbException {
         // some code goes here
         // not necessary for lab1
-        throw new DbException("not implemented yet");
+        if (this.pageMap.isEmpty()) {
+            return;
+        }
+
+        Map.Entry<PageId, Page> first = this.pageMap.entrySet().iterator().next();
+        PageId pid = first.getKey();
+        Page page = first.getValue();
+        if (page.isDirty() != null) {
+            try {
+                flushPage(pid);
+            } catch (IOException e) {
+                throw new DbException(e.getMessage());
+            }
+        }
+        this.pageMap.remove(pid);
     }
 
 }

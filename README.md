@@ -16,7 +16,7 @@ Progress (following the recommended order of implementation):
     - [X] `Filter` & `Join`
     - [X] `IntegerAggregator` & `StringAggregator`
     - [X] `Aggregate`
-    - [ ] Insertion, deletion, and page eviction in `BufferPool`
+    - [X] Insertion, deletion, and page eviction in `BufferPool`
     - [ ] `Insert` & `Delete`
 - [ ] Lab3
 - [ ] Lab4

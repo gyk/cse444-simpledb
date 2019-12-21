@@ -18,6 +18,7 @@ public class HeapPage implements Page {
     final byte header[];
     final Tuple tuples[];
     final int numSlots;
+    TransactionId dirty;
 
     byte[] oldData;
     private final Byte oldDataLock = new Byte((byte) 0);
@@ -247,6 +248,20 @@ public class HeapPage implements Page {
     public void deleteTuple(Tuple t) throws DbException {
         // some code goes here
         // not necessary for lab1
+        RecordId rid = t.getRecordId();
+        if (rid.getPageId() != this.pid) {
+            throw new DbException("The tuple does not belong to this page");
+        }
+
+        int tupleNo = rid.tupleno();
+        if (tupleNo < 0 || tupleNo >= this.tuples.length) {
+            throw new DbException("tupleNo is out of the bounds");
+        }
+        if (this.tuples[tupleNo] == null) {
+            throw new DbException("The tuple does not exist at tupleNo position");
+        }
+        this.tuples[tupleNo] = null;
+        markSlotUsed(tupleNo, false);
     }
 
     /**
@@ -259,6 +274,15 @@ public class HeapPage implements Page {
     public void insertTuple(Tuple t) throws DbException {
         // some code goes here
         // not necessary for lab1
+        for (int i = 0; i < numSlots; i++) {
+            if (!isSlotUsed(i)) {
+                t.setRecordId(new RecordId(this.pid, i));
+                this.tuples[i] = t;
+                markSlotUsed(i, true);
+                return;
+            }
+        }
+        throw new DbException("The HeapPage is full");
     }
 
     /**
@@ -268,6 +292,11 @@ public class HeapPage implements Page {
     public void markDirty(boolean dirty, TransactionId tid) {
         // some code goes here
         // not necessary for lab1
+        if (dirty) {
+            this.dirty = tid;
+        } else {
+            this.dirty = null;
+        }
     }
 
     /**
@@ -276,7 +305,7 @@ public class HeapPage implements Page {
     public TransactionId isDirty() {
         // some code goes here
         // Not necessary for lab1
-        return null;
+        return this.dirty;
     }
 
     /**
@@ -308,6 +337,13 @@ public class HeapPage implements Page {
     private void markSlotUsed(int i, boolean value) {
         // some code goes here
         // not necessary for lab1
+        int iByte = i / 8;
+        int iBit = i & (8 - 1);
+        if (value) {
+            this.header[iByte] |= 1 << iBit;
+        } else {
+            this.header[iByte] &= ~(1 << iBit);
+        }
     }
 
     /**
