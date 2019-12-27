@@ -34,6 +34,7 @@ public class BufferPool {
 
     private int numPages;
     private ConcurrentHashMap<PageId, Page> pageMap;
+    private LockManager lockManager;
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -44,6 +45,7 @@ public class BufferPool {
         // some code goes here
         this.numPages = numPages;
         this.pageMap = new ConcurrentHashMap<>(numPages);
+        this.lockManager = new LockManager();
     }
 
     public static int getPageSize() {
@@ -73,6 +75,7 @@ public class BufferPool {
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
             throws TransactionAbortedException, DbException {
         // some code goes here
+        this.lockManager.acquireLock(tid, pid, perm);
         Page page = this.pageMap.get(pid);
         if (page == null) {
             page = Database.getCatalog().getDatabaseFile(pid.getTableId()).readPage(pid);
@@ -96,6 +99,7 @@ public class BufferPool {
     public void releasePage(TransactionId tid, PageId pid) {
         // some code goes here
         // not necessary for lab1|lab2
+        this.lockManager.releaseLock(tid, pid);
     }
 
     /**
@@ -106,6 +110,7 @@ public class BufferPool {
     public void transactionComplete(TransactionId tid) throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
+        this.lockManager.txnReleaseLocks(tid);
     }
 
     /**
@@ -114,7 +119,7 @@ public class BufferPool {
     public boolean holdsLock(TransactionId tid, PageId p) {
         // some code goes here
         // not necessary for lab1|lab2
-        return false;
+        return this.lockManager.txnHoldsLock(tid, p);
     }
 
     /**
@@ -185,7 +190,12 @@ public class BufferPool {
     public synchronized void flushAllPages() throws IOException {
         // some code goes here
         // not necessary for lab1
-
+        for (Page p : this.pageMap.values()) {
+            if (p.isDirty() != null) {
+                flushPage(p.getId());
+                p.markDirty(false, null);
+            }
+        }
     }
 
     /**
@@ -207,6 +217,8 @@ public class BufferPool {
     private synchronized void flushPage(PageId pid) throws IOException {
         // some code goes here
         // not necessary for lab1
+        Page page = this.pageMap.get(pid);
+        Database.getCatalog().getDatabaseFile(pid.getTableId()).writePage(page);
     }
 
     /**
@@ -215,6 +227,12 @@ public class BufferPool {
     public synchronized void flushPages(TransactionId tid) throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
+        for (Page p : this.pageMap.values()) {
+            if (tid.equals(p.isDirty())) {
+                flushPage(p.getId());
+                p.markDirty(false, null);
+            }
+        }
     }
 
     /**
