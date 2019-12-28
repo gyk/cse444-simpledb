@@ -2,6 +2,7 @@ package simpledb;
 
 import java.io.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,7 +111,7 @@ public class BufferPool {
     public void transactionComplete(TransactionId tid) throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
-        this.lockManager.txnReleaseLocks(tid);
+        transactionComplete(tid, true);
     }
 
     /**
@@ -133,6 +134,19 @@ public class BufferPool {
             throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
+        for (Map.Entry<PageId, Page> entry : this.pageMap.entrySet()) {
+            PageId pid = entry.getKey();
+            Page page = entry.getValue();
+            if (tid.equals(page.isDirty())) {
+                if (commit) {
+                    flushPage(pid);
+                    page.markDirty(false, null);
+                } else { // abort
+                    entry.setValue(page.getBeforeImage());
+                }
+            }
+        }
+        this.lockManager.txnReleaseLocks(tid);
     }
 
     /**
