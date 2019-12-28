@@ -80,7 +80,7 @@ public class BufferPool {
         Page page = this.pageMap.get(pid);
         if (page == null) {
             page = Database.getCatalog().getDatabaseFile(pid.getTableId()).readPage(pid);
-            if (this.pageMap.size() == this.numPages) {
+            while (this.pageMap.size() >= this.numPages) {
                 evictPage();
             }
             this.pageMap.put(pid, page);
@@ -256,21 +256,28 @@ public class BufferPool {
     private synchronized void evictPage() throws DbException {
         // some code goes here
         // not necessary for lab1
-        if (this.pageMap.isEmpty()) {
-            return;
-        }
+        Iterator<Map.Entry<PageId, Page>> it = this.pageMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<PageId, Page> entry = it.next();
+            PageId pid = entry.getKey();
+            Page page = entry.getValue();
 
-        Map.Entry<PageId, Page> first = this.pageMap.entrySet().iterator().next();
-        PageId pid = first.getKey();
-        Page page = first.getValue();
-        if (page.isDirty() != null) {
+            // NO STEAL policy, i.e., never evict a dirty page
+            if (page.isDirty() != null) {
+                continue;
+            }
             try {
                 flushPage(pid);
+                this.pageMap.remove(pid);
+                return;
             } catch (IOException e) {
                 throw new DbException(e.getMessage());
             }
         }
-        this.pageMap.remove(pid);
+
+        if (this.pageMap.size() >= this.numPages) {
+            throw new DbException("The buffer pool is full");
+        }
     }
 
 }

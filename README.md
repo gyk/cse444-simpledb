@@ -21,7 +21,7 @@ Progress (following the recommended order of implementation):
 - [ ] [Lab3](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab3/lab3.html)
     - [X] Granting Locks
     - [X] Lock Lifetime
-    - [ ] Implementing NO STEAL
+    - [X] Implementing NO STEAL
     - [X] Transactions
     - [ ] Deadlocks and Aborts
 - [ ] Lab4
