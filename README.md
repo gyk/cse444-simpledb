@@ -18,12 +18,12 @@ Progress (following the recommended order of implementation):
     - [X] `Aggregate`
     - [X] Insertion, deletion, and page eviction in `BufferPool`
     - [X] `Insert` & `Delete`
-- [ ] [Lab3](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab3/lab3.html)
+- [X] [Lab3](https://courses.cs.washington.edu/courses/cse444/15sp/labs/lab3/lab3.html)
     - [X] Granting Locks
     - [X] Lock Lifetime
     - [X] Implementing NO STEAL
     - [X] Transactions
-    - [ ] Deadlocks and Aborts
+    - [X] Deadlocks and Aborts
 - [ ] Lab4
 - [ ] Lab5
 - [ ] Lab6

@@ -249,8 +249,11 @@ public class HeapPage implements Page {
         // some code goes here
         // not necessary for lab1
         RecordId rid = t.getRecordId();
-        if (rid.getPageId() != this.pid) {
-            throw new DbException("The tuple does not belong to this page");
+        if (!rid.getPageId().equals(this.pid)) {
+            throw new DbException(String.format(
+                    "The tuple (pid = (%d, %d)) does not belong to this page (pid = (%d, %d))",
+                    rid.getPageId().getTableId(), rid.getPageId().pageNumber(),
+                    this.pid.getTableId(), this.pid.pageNumber()));
         }
 
         int tupleNo = rid.tupleno();
