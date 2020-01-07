@@ -140,7 +140,6 @@ public class BufferPool {
             if (tid.equals(page.isDirty())) {
                 if (commit) {
                     flushPage(pid);
-                    page.markDirty(false, null);
                 } else { // abort
                     entry.setValue(page.getBeforeImage());
                 }
@@ -207,7 +206,6 @@ public class BufferPool {
         for (Page p : this.pageMap.values()) {
             if (p.isDirty() != null) {
                 flushPage(p.getId());
-                p.markDirty(false, null);
             }
         }
     }
@@ -233,6 +231,8 @@ public class BufferPool {
         // not necessary for lab1
         Page page = this.pageMap.get(pid);
         Database.getCatalog().getDatabaseFile(pid.getTableId()).writePage(page);
+        page.markDirty(false, null);
+        page.setBeforeImage();
     }
 
     /**
@@ -244,7 +244,6 @@ public class BufferPool {
         for (Page p : this.pageMap.values()) {
             if (tid.equals(p.isDirty())) {
                 flushPage(p.getId());
-                p.markDirty(false, null);
             }
         }
     }
@@ -266,13 +265,8 @@ public class BufferPool {
             if (page.isDirty() != null) {
                 continue;
             }
-            try {
-                flushPage(pid);
-                this.pageMap.remove(pid);
-                return;
-            } catch (IOException e) {
-                throw new DbException(e.getMessage());
-            }
+            this.pageMap.remove(pid);
+            return;
         }
 
         if (this.pageMap.size() >= this.numPages) {
